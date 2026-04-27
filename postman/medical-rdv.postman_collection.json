@@ -1,0 +1,506 @@
+{
+  "info": {
+    "name": "Medical-RDV Microservices",
+    "description": "Postman collection for the medical appointment management system. Run requests in order from each folder. Login requests auto-save tokens to environment.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Auth",
+      "item": [
+        {
+          "name": "Register Patient",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": "{{auth_url}}/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"alice@example.com\",\n  \"password\": \"secret123\",\n  \"role\": \"patient\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.environment.set('patient_user_id', pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Register Practitioner",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": "{{auth_url}}/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"dr.house@example.com\",\n  \"password\": \"secret123\",\n  \"role\": \"practitioner\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.environment.set('practitioner_user_id', pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Register Admin",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": "{{auth_url}}/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"secret123\",\n  \"role\": \"admin\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login Patient",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": "{{auth_url}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"alice@example.com\",\n  \"password\": \"secret123\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const j = pm.response.json();",
+                  "pm.environment.set('access_token', j.access_token);",
+                  "pm.environment.set('refresh_token', j.refresh_token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login Practitioner",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": "{{auth_url}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"dr.house@example.com\",\n  \"password\": \"secret123\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const j = pm.response.json();",
+                  "pm.environment.set('access_token', j.access_token);",
+                  "pm.environment.set('refresh_token', j.refresh_token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login Admin",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": "{{auth_url}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"secret123\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const j = pm.response.json();",
+                  "pm.environment.set('access_token', j.access_token);",
+                  "pm.environment.set('refresh_token', j.refresh_token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Me",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "url": "{{auth_url}}/auth/me"
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": "{{auth_url}}/auth/refresh",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Patient",
+      "item": [
+        {
+          "name": "Create Patient Profile (login as patient first)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{access_token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": "{{patient_url}}/patients",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Alice\",\n  \"last_name\": \"Martin\",\n  \"birth_date\": \"1990-05-12\",\n  \"phone\": \"+33600000000\",\n  \"address\": \"10 rue de la Paix, Paris\",\n  \"preferred_channel\": \"email\",\n  \"language\": \"fr\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.environment.set('patient_id', pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "url": "{{patient_url}}/patients/me"
+          }
+        },
+        {
+          "name": "List Patients (medical staff)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "url": "{{patient_url}}/patients"
+          }
+        },
+        {
+          "name": "Add Medical History (practitioner)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{access_token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": "{{patient_url}}/patients/{{patient_id}}/history",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"condition\": \"Hypertension\",\n  \"notes\": \"Controlled with medication\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Practitioner",
+      "item": [
+        {
+          "name": "Create Practitioner Profile (login as practitioner first)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{access_token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": "{{practitioner_url}}/practitioners",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Gregory\",\n  \"last_name\": \"House\",\n  \"specialty\": \"Diagnostician\",\n  \"bio\": \"Everybody lies.\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.environment.set('practitioner_id', pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Set Weekly Schedule",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{access_token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": "{{practitioner_url}}/practitioners/{{practitioner_id}}/schedule",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schedules\": [\n    {\"day_of_week\": 0, \"start_time\": \"09:00:00\", \"end_time\": \"17:00:00\", \"slot_duration_min\": 30},\n    {\"day_of_week\": 1, \"start_time\": \"09:00:00\", \"end_time\": \"17:00:00\", \"slot_duration_min\": 30},\n    {\"day_of_week\": 2, \"start_time\": \"09:00:00\", \"end_time\": \"17:00:00\", \"slot_duration_min\": 30},\n    {\"day_of_week\": 3, \"start_time\": \"09:00:00\", \"end_time\": \"17:00:00\", \"slot_duration_min\": 30},\n    {\"day_of_week\": 4, \"start_time\": \"09:00:00\", \"end_time\": \"13:00:00\", \"slot_duration_min\": 30}\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "List Practitioners (public)",
+          "request": {
+            "method": "GET",
+            "url": "{{practitioner_url}}/practitioners?specialty=Diagnostician"
+          }
+        },
+        {
+          "name": "Get Availability (next 7 days)",
+          "request": {
+            "method": "GET",
+            "url": "{{practitioner_url}}/practitioners/{{practitioner_id}}/availability?date_from=2026-04-26&date_to=2026-05-03"
+          }
+        },
+        {
+          "name": "Add Vacation Override",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{access_token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": "{{practitioner_url}}/practitioners/{{practitioner_id}}/overrides",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-05-01\",\n  \"is_available\": false,\n  \"reason\": \"Public holiday\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Appointment",
+      "item": [
+        {
+          "name": "Book Appointment (login as patient)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{access_token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": "{{appointment_url}}/appointments",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patient_id\": \"{{patient_id}}\",\n  \"practitioner_id\": \"{{practitioner_id}}\",\n  \"start_at\": \"2026-04-27T10:00:00\",\n  \"end_at\": \"2026-04-27T10:30:00\",\n  \"reason\": \"General check-up\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.environment.set('appointment_id', pm.response.json().id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Conflict Test (book same slot - expect 409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{access_token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": "{{appointment_url}}/appointments",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patient_id\": \"{{patient_id}}\",\n  \"practitioner_id\": \"{{practitioner_id}}\",\n  \"start_at\": \"2026-04-27T10:15:00\",\n  \"end_at\": \"2026-04-27T10:45:00\",\n  \"reason\": \"Overlap test\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Returns 409 conflict', () => pm.expect(pm.response.code).to.equal(409));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "List My Appointments",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "url": "{{appointment_url}}/appointments?patient_id={{patient_id}}"
+          }
+        },
+        {
+          "name": "Get Appointment Detail",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "url": "{{appointment_url}}/appointments/{{appointment_id}}"
+          }
+        },
+        {
+          "name": "Reschedule",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{access_token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": "{{appointment_url}}/appointments/{{appointment_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"start_at\": \"2026-04-28T14:00:00\",\n  \"end_at\": \"2026-04-28T14:30:00\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Confirm (secretary/practitioner)",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "url": "{{appointment_url}}/appointments/{{appointment_id}}/confirm"
+          }
+        },
+        {
+          "name": "Cancel",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "url": "{{appointment_url}}/appointments/{{appointment_id}}"
+          }
+        },
+        {
+          "name": "Mark No-Show",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "url": "{{appointment_url}}/appointments/{{appointment_id}}/no-show"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Notification",
+      "item": [
+        {
+          "name": "Send Email Notification",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": "{{notification_url}}/notifications/send",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"channel\": \"email\",\n  \"template\": \"appointment_created\",\n  \"recipient\": \"alice@example.com\",\n  \"payload\": {\n    \"appointment_id\": \"{{appointment_id}}\",\n    \"start_at\": \"2026-04-27T10:00:00\"\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "List Notifications",
+          "request": {
+            "method": "GET",
+            "url": "{{notification_url}}/notifications"
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Analytics",
+      "item": [
+        {
+          "name": "Practitioner Stats",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "url": "{{analytics_url}}/stats/practitioner/{{practitioner_id}}"
+          }
+        },
+        {
+          "name": "Daily Activity",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "url": "{{analytics_url}}/stats/daily?date=2026-04-27"
+          }
+        },
+        {
+          "name": "No-Show Top Patients (secretary/admin)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "url": "{{analytics_url}}/stats/no-shows?limit=10"
+          }
+        },
+        {
+          "name": "Peak Hours",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "url": "{{analytics_url}}/stats/peak-hours?days=30"
+          }
+        },
+        {
+          "name": "Global Overview (admin)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "url": "{{analytics_url}}/stats/overview"
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Health Checks",
+      "item": [
+        { "name": "Auth Health",          "request": { "method": "GET", "url": "{{auth_url}}/health" } },
+        { "name": "Patient Health",       "request": { "method": "GET", "url": "{{patient_url}}/health" } },
+        { "name": "Practitioner Health",  "request": { "method": "GET", "url": "{{practitioner_url}}/health" } },
+        { "name": "Appointment Health",   "request": { "method": "GET", "url": "{{appointment_url}}/health" } },
+        { "name": "Notification Health",  "request": { "method": "GET", "url": "{{notification_url}}/health" } },
+        { "name": "Analytics Health",     "request": { "method": "GET", "url": "{{analytics_url}}/health" } }
+      ]
+    }
+  ]
+}

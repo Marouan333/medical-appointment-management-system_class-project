@@ -1,0 +1,729 @@
+\documentclass[12pt,a4paper]{article}
+
+% ===== PACKAGES =====
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tcolorbox}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{pifont}
+\newcommand{\cmark}{\textcolor{greenok}{\ding{51}}}
+\newcommand{\xmark}{\textcolor{redalert}{\ding{55}}}
+\usepackage{microtype}
+\usepackage{parskip}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{mdframed}
+\usepackage{lmodern}
+
+% ===== PAGE GEOMETRY =====
+\geometry{
+  a4paper,
+  top=2.5cm,
+  bottom=2.5cm,
+  left=2.8cm,
+  right=2.8cm,
+  headheight=15pt
+}
+
+% ===== COLORS =====
+\definecolor{primaryblue}{RGB}{13, 71, 161}
+\definecolor{accentblue}{RGB}{30, 136, 229}
+\definecolor{lightgray}{RGB}{245, 245, 245}
+\definecolor{codegray}{RGB}{240, 240, 240}
+\definecolor{darkgray}{RGB}{60, 60, 60}
+\definecolor{greenok}{RGB}{46, 125, 50}
+\definecolor{redalert}{RGB}{198, 40, 40}
+
+% ===== HYPERREF =====
+\hypersetup{
+  colorlinks=true,
+  linkcolor=primaryblue,
+  urlcolor=accentblue,
+  citecolor=primaryblue,
+  pdftitle={Rapport - Système de Gestion des Rendez-vous Médicaux},
+  pdfauthor={Rouan Ezbakhe},
+}
+
+% ===== HEADER / FOOTER =====
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{primaryblue}{\textbf{Système de Gestion des RDV Médicaux}}}
+\fancyhead[R]{\small\textcolor{darkgray}{Architecture Microservices}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% ===== SECTION STYLING =====
+\titleformat{\section}
+  {\Large\bfseries\color{primaryblue}}
+  {\thesection.}{0.8em}{}[\titlerule]
+
+\titleformat{\subsection}
+  {\large\bfseries\color{accentblue}}
+  {\thesubsection.}{0.6em}{}
+
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{darkgray}}
+  {\thesubsubsection.}{0.5em}{}
+
+% ===== CODE LISTINGS =====
+\lstset{
+  backgroundcolor=\color{codegray},
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  frame=single,
+  framerule=0.5pt,
+  rulecolor=\color{accentblue},
+  numbers=left,
+  numberstyle=\tiny\color{darkgray},
+  keywordstyle=\color{primaryblue}\bfseries,
+  commentstyle=\color{greenok}\itshape,
+  stringstyle=\color{redalert},
+  showstringspaces=false,
+  captionpos=b,
+  xleftmargin=15pt,
+}
+\lstdefinelanguage{yaml}{
+  keywords={true,false,null,yes,no},
+  keywordstyle=\color{primaryblue}\bfseries,
+  sensitive=false,
+  comment=[l]{\#},
+  commentstyle=\color{greenok}\itshape,
+  morestring=[b]',
+  morestring=[b]",
+  stringstyle=\color{redalert},
+}
+
+% ===== TCOLORBOX STYLES =====
+\tcbuselibrary{skins,breakable}
+\newtcolorbox{infobox}[1][]{
+  colback=lightgray,
+  colframe=accentblue,
+  fonttitle=\bfseries\color{primaryblue},
+  title=#1,
+  breakable,
+  left=6pt, right=6pt, top=6pt, bottom=6pt,
+}
+
+% ===== TABLE COLUMN =====
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+% =============================
+%        DOCUMENT BEGIN
+% =============================
+\begin{document}
+
+% ===== TITLE PAGE =====
+\begin{titlepage}
+  \centering
+  \vspace*{1.5cm}
+
+  {\color{primaryblue}\rule{\linewidth}{1.5pt}}
+  \vspace{0.4cm}
+
+  {\Huge\bfseries\color{primaryblue}
+    Système de Gestion des\\[0.3cm]
+    Rendez-vous Médicaux
+  }
+
+  \vspace{0.4cm}
+  {\color{primaryblue}\rule{\linewidth}{1.5pt}}
+
+  \vspace{1cm}
+
+  \begin{tcolorbox}[
+    colback=accentblue!10,
+    colframe=accentblue,
+    width=0.85\textwidth,
+    center,
+    fontupper=\large\centering
+  ]
+    \textbf{Architecture Microservices} \\[4pt]
+    Python (FastAPI) \textbullet\ PostgreSQL \textbullet\ OAuth2/JWT \\
+    Docker \textbullet\ REST API
+  \end{tcolorbox}
+
+  \vspace{2cm}
+
+  \begin{tabular}{rl}
+    \textbf{Auteurs :}    & Marouan Ezbakhe \\[2pt]
+                          & Mohammed Hamdouch \\[4pt]
+    \textbf{Encadrant :} & Pr. Abderrahim Elqadi \\[4pt]
+    \textbf{Date :}       & Avril 2026 \\[4pt]
+  \end{tabular}
+
+  \vfill
+
+  {\small\color{darkgray}
+    Rapport technique — Architecture, Conception, Implémentation et Tests
+  }
+\end{titlepage}
+
+% ===== TABLE OF CONTENTS =====
+\newpage
+\tableofcontents
+\newpage
+
+% =============================
+%   SECTION 1 — INTRODUCTION
+% =============================
+\section{Introduction et Contexte}
+
+\subsection{Présentation du projet}
+
+Ce rapport présente la conception et l'implémentation d'un \textbf{Système de Gestion des Rendez-vous Médicaux} (rdv), réalisé dans le cadre du projet QADI 2. L'objectif est de permettre aux patients de prendre, modifier ou annuler des rendez-vous en ligne, tout en optimisant l'agenda des professionnels de santé.
+
+Le système repose sur une \textbf{architecture microservices}, où chaque fonctionnalité métier est encapsulée dans un service indépendant, déployé via Docker et communicant par des API REST sécurisées avec JWT.
+
+\subsection{Acteurs du système}
+
+Le système identifie quatre acteurs principaux :
+
+\begin{itemize}[leftmargin=1.5cm]
+  \item \textbf{Patient} : prise de rendez-vous, consultation de l'historique, gestion du profil.
+  \item \textbf{Médecin / Infirmier} : gestion de l'agenda, définition des disponibilités, accès aux dossiers patients.
+  \item \textbf{Secrétariat médical} : validation des rendez-vous, gestion des urgences et des annulations.
+  \item \textbf{Administrateur} : paramétrage du système, consultation des statistiques globales, gestion des comptes.
+\end{itemize}
+
+\subsection{Objectifs techniques}
+
+\begin{infobox}[Objectifs]
+\begin{enumerate}[leftmargin=1cm]
+  \item Concevoir une architecture microservices modulaire et extensible.
+  \item Implémenter une authentification sécurisée basée sur OAuth2 et JWT.
+  \item Gérer les conflits de créneaux en temps réel.
+  \item Envoyer des notifications par email automatiques.
+  \item Exposer des statistiques analytiques sur l'activité médicale.
+  \item Conteneuriser l'ensemble avec Docker Compose.
+\end{enumerate}
+\end{infobox}
+
+% =============================
+%   SECTION 2 — ARCHITECTURE
+% =============================
+\section{Architecture Microservices}
+
+\subsection{Vue d'ensemble}
+
+L'architecture est composée de \textbf{6 microservices} indépendants, chacun disposant de sa propre base de données logique PostgreSQL. La communication entre services s'effectue via des appels HTTP REST synchrones.
+
+\begin{table}[H]
+\centering
+\caption{Microservices du système}
+\begin{tabularx}{\textwidth}{C{3cm} C{1.5cm} X}
+\toprule
+\textbf{Service} & \textbf{Port} & \textbf{Rôle} \\
+\midrule
+auth-service & 8001 & Authentification JWT, gestion des rôles, OAuth2 \\
+patient-service & 8002 & Profils patients, antécédents médicaux, préférences \\
+practitioner-service & 8003 & Profils soignants, plannings hebdomadaires, disponibilités \\
+appointment-service & 8004 & Création/modification/annulation RDV, détection de conflits \\
+notification-service & 8005 & Envoi d'emails (Gmail SMTP), SMS (stub), rappels automatiques \\
+analytics-service & 8006 & Taux de remplissage, no-shows, pics d'activité \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Principes de conception}
+
+\subsubsection{Séparation des responsabilités}
+Chaque microservice est responsable d'un unique domaine métier. Cette séparation garantit qu'une modification dans un service n'impacte pas les autres.
+
+\subsubsection{Base de données par service}
+Chaque service dispose de sa propre base de données logique PostgreSQL (\texttt{auth\_db}, \texttt{patient\_db}, etc.), garantissant l'isolation des données et permettant une évolution indépendante des schémas.
+
+\subsubsection{JWT partagé}
+L'auth-service est le seul émetteur de tokens JWT (HS256). Tous les autres services décodent localement les tokens avec le même secret partagé, évitant les appels réseau supplémentaires pour la validation.
+
+\subsubsection{Communication best-effort}
+Les notifications sont envoyées en mode \textit{fire-and-forget} : si le service de notification est indisponible, le rendez-vous est quand même créé avec succès. Cela évite un couplage fort entre les services.
+
+% =============================
+%   SECTION 3 — TECHNOLOGIES
+% =============================
+\section{Technologies Utilisées}
+
+\begin{table}[H]
+\centering
+\caption{Stack technologique}
+\begin{tabularx}{\textwidth}{L{4cm} L{3.5cm} X}
+\toprule
+\textbf{Technologie} & \textbf{Version} & \textbf{Usage} \\
+\midrule
+Python & 3.11 & Langage principal de tous les microservices \\
+FastAPI & 0.111 & Framework web asynchrone, génération Swagger automatique \\
+SQLAlchemy & 2.0 & ORM pour la gestion des modèles et requêtes SQL \\
+Pydantic & 2.7 & Validation des données entrantes/sortantes (schémas) \\
+PostgreSQL & 16 & Base de données relationnelle pour tous les services \\
+python-jose & 3.3 & Génération et vérification des tokens JWT (HS256) \\
+passlib/bcrypt & 1.7 & Hachage sécurisé des mots de passe \\
+Docker & 25+ & Conteneurisation de chaque microservice \\
+Docker Compose & 3.9 & Orchestration locale de l'ensemble des services \\
+APScheduler & 3.10 & Planificateur de tâches pour les rappels automatiques \\
+Gmail SMTP & — & Envoi d'emails de confirmation et de rappel \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% =============================
+%   SECTION 4 — MICROSERVICES
+% =============================
+\section{Description des Microservices}
+
+\subsection{auth-service}
+
+L'auth-service est le point d'entrée de l'authentification. Il est responsable de :
+\begin{itemize}
+  \item L'inscription des utilisateurs avec hachage bcrypt du mot de passe.
+  \item L'émission des tokens JWT : \textbf{access token} (60 min) et \textbf{refresh token} (7 jours).
+  \item La gestion de 4 rôles : \texttt{patient}, \texttt{practitioner}, \texttt{secretary}, \texttt{admin}.
+  \item La révocation des refresh tokens (persistés en base).
+\end{itemize}
+
+\begin{lstlisting}[language=Python, caption={Endpoint de login — auth-service}]
+@router.post("/auth/login", response_model=TokenResponse)
+def login(data: UserLogin, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == data.email).first()
+    if not user or not verify_password(data.password, user.password_hash):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    access  = create_access_token(sub=str(user.id), role=user.role)
+    refresh = create_refresh_token(sub=str(user.id))
+    return TokenResponse(access_token=access, refresh_token=refresh)
+\end{lstlisting}
+
+\subsection{patient-service}
+
+Ce service gère les profils patients. Il expose des endpoints pour la création du profil (lié au \texttt{user\_id} de l'auth-service), la mise à jour, la consultation et l'ajout d'antécédents médicaux. Le contrôle d'accès est renforcé : un patient ne peut accéder qu'à son propre profil, tandis que le personnel médical peut lister tous les patients.
+
+\subsection{practitioner-service}
+
+Ce service est le plus complexe du point de vue métier. Il gère :
+\begin{itemize}
+  \item Les profils des praticiens avec leur spécialité et biographie.
+  \item Les \textbf{plannings hebdomadaires} (jour de semaine, heure de début/fin, durée des créneaux).
+  \item Les \textbf{overrides de disponibilité} (congés, jours fériés, exceptions ponctuelles).
+  \item Le \textbf{calcul dynamique des créneaux libres} pour une plage de dates.
+\end{itemize}
+
+L'algorithme de disponibilité combine le planning hebdomadaire, les overrides et les créneaux déjà réservés (récupérés depuis l'appointment-service) pour retourner uniquement les créneaux réellement disponibles.
+
+\subsection{appointment-service}
+
+C'est le service central du système. Ses responsabilités sont :
+\begin{itemize}
+  \item La création de rendez-vous avec \textbf{détection de conflits} temporels.
+  \item La gestion du cycle de vie : \texttt{scheduled} → \texttt{confirmed} → \texttt{completed} (ou \texttt{cancelled} / \texttt{no\_show}).
+  \item Un \textbf{journal d'audit} complet de chaque action sur un rendez-vous.
+  \item L'appel fire-and-forget au notification-service après chaque événement.
+\end{itemize}
+
+\begin{lstlisting}[language=Python, caption={Détection de conflits — appointment-service}]
+def _conflict_exists(db, practitioner_id, start_at, end_at, exclude_id=None):
+    q = db.query(Appointment).filter(
+        Appointment.practitioner_id == practitioner_id,
+        Appointment.status.in_(["scheduled", "confirmed"]),
+        and_(Appointment.start_at < end_at,
+             Appointment.end_at   > start_at),
+    )
+    if exclude_id:
+        q = q.filter(Appointment.id != exclude_id)
+    return db.query(q.exists()).scalar()
+\end{lstlisting}
+
+La condition \texttt{start\_at < end\_at\_new AND end\_at > start\_at\_new} détecte tout type de chevauchement temporel (partiel ou total).
+
+\subsection{notification-service}
+
+Ce service reçoit les événements de l'appointment-service et envoie les notifications. Il utilise :
+\begin{itemize}
+  \item \textbf{Gmail SMTP} avec STARTTLS pour l'envoi d'emails réels.
+  \item Un système de \textbf{templates} inline pour les messages de confirmation, annulation et rappel.
+  \item Un \textbf{scheduler APScheduler} pour les rappels automatiques 24h avant le rendez-vous.
+  \item Une persistance en base de chaque notification avec son statut (\texttt{pending / sent / failed}).
+\end{itemize}
+
+\subsection{analytics-service}
+
+Ce service lit directement la base \texttt{appointment\_db} via des requêtes SQL agrégées pour produire des statistiques en temps réel :
+
+\begin{itemize}
+  \item \textbf{Taux de remplissage} d'un praticien sur une période.
+  \item \textbf{Taux de no-show} global et par patient.
+  \item \textbf{Pics d'activité} par heure de la journée.
+  \item \textbf{Vue globale} de l'état des rendez-vous.
+\end{itemize}
+
+% =============================
+%   SECTION 5 — BASES DE DONNÉES
+% =============================
+\section{Conception des Bases de Données}
+
+\begin{table}[H]
+\centering
+\caption{Schéma de la base \texttt{auth\_db}}
+\begin{tabularx}{\textwidth}{L{3.5cm} L{3cm} X}
+\toprule
+\textbf{Colonne} & \textbf{Type} & \textbf{Description} \\
+\midrule
+\multicolumn{3}{l}{\textit{Table : users}} \\
+id & UUID (PK) & Identifiant unique \\
+email & VARCHAR(255) & Email unique, indexé \\
+password\_hash & VARCHAR(255) & Hash bcrypt \\
+role & VARCHAR(32) & patient / practitioner / secretary / admin \\
+is\_active & BOOLEAN & Compte actif ou désactivé \\
+\midrule
+\multicolumn{3}{l}{\textit{Table : refresh\_tokens}} \\
+id & UUID (PK) & Identifiant \\
+user\_id & UUID & Référence à users.id \\
+token & VARCHAR(512) & Token JWT (unique) \\
+expires\_at & DATETIME & Date d'expiration \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Schéma de la base \texttt{appointment\_db}}
+\begin{tabularx}{\textwidth}{L{3.5cm} L{3cm} X}
+\toprule
+\textbf{Colonne} & \textbf{Type} & \textbf{Description} \\
+\midrule
+\multicolumn{3}{l}{\textit{Table : appointments}} \\
+id & UUID (PK) & Identifiant unique \\
+patient\_id & UUID & Référence patient \\
+practitioner\_id & UUID & Référence praticien, indexé \\
+start\_at & DATETIME & Début du rendez-vous \\
+end\_at & DATETIME & Fin du rendez-vous \\
+status & VARCHAR(32) & scheduled / confirmed / cancelled / completed / no\_show \\
+reason & TEXT & Motif de consultation \\
+\midrule
+\multicolumn{3}{l}{\textit{Table : appointment\_history}} \\
+id & UUID (PK) & Identifiant \\
+appointment\_id & UUID (FK) & Rendez-vous lié \\
+action & VARCHAR(64) & created / rescheduled / confirmed / cancelled / no\_show \\
+actor\_id & UUID & Utilisateur ayant effectué l'action \\
+timestamp & DATETIME & Horodatage \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% =============================
+%   SECTION 6 — SÉCURITÉ
+% =============================
+\section{Sécurité et Authentification}
+
+\subsection{Flux OAuth2 avec JWT}
+
+Le système implémente le flux \textbf{Resource Owner Password Credentials} d'OAuth2 :
+
+\begin{enumerate}
+  \item Le client envoie ses identifiants à \texttt{POST /auth/login}.
+  \item L'auth-service vérifie le mot de passe (bcrypt) et retourne un \textbf{access token} (JWT, 60 min) et un \textbf{refresh token} (JWT, 7 jours).
+  \item Le client inclut l'access token dans l'en-tête \texttt{Authorization: Bearer <token>} de chaque requête.
+  \item Chaque microservice \textbf{décode localement} le token avec le secret partagé (\texttt{JWT\_SECRET}).
+  \item Lorsque l'access token expire, le client utilise le refresh token sur \texttt{POST /auth/refresh} pour obtenir une nouvelle paire de tokens.
+\end{enumerate}
+
+\subsection{Structure du token JWT}
+
+\begin{lstlisting}[caption={Payload d'un access token}]
+{
+  "sub": "550e8400-e29b-41d4-a716-446655440000",  // user_id
+  "role": "patient",
+  "type": "access",
+  "iat": 1745000000,
+  "exp": 1745003600
+}
+\end{lstlisting}
+
+\subsection{Contrôle d'accès basé sur les rôles (RBAC)}
+
+\begin{table}[H]
+\centering
+\caption{Matrice de contrôle d'accès}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{p{6cm} C{2cm} C{2.5cm} C{2cm} C{1.8cm}}
+\toprule
+\textbf{Action} & \textbf{Patient} & \textbf{Practitioner} & \textbf{Secretary} & \textbf{Admin} \\
+\midrule
+Créer un RDV            & \cmark & \cmark & \cmark & \cmark \\
+Voir son propre profil  & \cmark & \cmark & \cmark & \cmark \\
+Lister tous les patients &       & \cmark & \cmark & \cmark \\
+Confirmer un RDV        &        & \cmark & \cmark & \cmark \\
+Marquer no-show         &        & \cmark & \cmark & \cmark \\
+Voir statistiques       &        & \cmark & \cmark & \cmark \\
+Désactiver un compte    &        &        &        & \cmark \\
+Vue globale analytics   &        &        &        & \cmark \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =============================
+%   SECTION 7 — FLUX DE DONNÉES
+% =============================
+\section{Flux de Données}
+
+\subsection{Scénario : Prise de rendez-vous (Golden Path)}
+
+Le flux complet d'une réservation de rendez-vous implique 4 microservices :
+
+\begin{enumerate}
+  \item \textbf{Authentification} : le patient envoie ses identifiants à l'auth-service et reçoit un JWT.
+  \item \textbf{Consultation des disponibilités} : le patient interroge le practitioner-service pour obtenir les créneaux libres sur une période donnée. Celui-ci appelle l'appointment-service pour récupérer les créneaux déjà réservés, puis calcule les slots disponibles.
+  \item \textbf{Réservation} : le patient envoie \texttt{POST /appointments} à l'appointment-service avec son JWT. Ce service :
+  \begin{itemize}
+    \item Décode le JWT localement.
+    \item Vérifie l'existence du praticien (appel HTTP au practitioner-service).
+    \item Vérifie l'absence de conflit temporel (requête SQL).
+    \item Insère le rendez-vous avec statut \texttt{scheduled}.
+    \item Enregistre l'action dans le journal d'audit.
+  \end{itemize}
+  \item \textbf{Notification} : l'appointment-service appelle de façon asynchrone le notification-service, qui envoie un email de confirmation via Gmail SMTP.
+\end{enumerate}
+
+\subsection{Communication inter-services}
+
+\begin{table}[H]
+\centering
+\caption{Appels HTTP entre microservices}
+\begin{tabularx}{\textwidth}{L{3.5cm} L{3.5cm} X L{2.5cm}}
+\toprule
+\textbf{Source} & \textbf{Destination} & \textbf{Endpoint} & \textbf{Auth} \\
+\midrule
+practitioner-service & appointment-service & GET /appointments/internal/booked & Aucune (interne) \\
+appointment-service & practitioner-service & GET /practitioners/\{id\} & Aucune (public) \\
+appointment-service & patient-service & GET /patients/\{id\} & JWT propagé \\
+appointment-service & notification-service & POST /notifications/send & Aucune (interne) \\
+analytics-service & PostgreSQL (appt DB) & SQL direct & DB credentials \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% =============================
+%   SECTION 8 — API DESIGN
+% =============================
+\section{Conception des APIs REST}
+
+\subsection{Principaux endpoints}
+
+\subsubsection{auth-service (:8001)}
+\begin{itemize}
+  \item \texttt{POST /auth/register} — Inscription (rôle requis dans le body)
+  \item \texttt{POST /auth/login} — Connexion, retourne access + refresh token
+  \item \texttt{POST /auth/refresh} — Renouvellement du token
+  \item \texttt{GET /auth/me} — Profil de l'utilisateur connecté
+\end{itemize}
+
+\subsubsection{practitioner-service (:8003)}
+\begin{itemize}
+  \item \texttt{GET /practitioners?specialty=} — Liste avec filtre par spécialité
+  \item \texttt{PUT /practitioners/\{id\}/schedule} — Définition du planning hebdomadaire
+  \item \texttt{GET /practitioners/\{id\}/availability?date\_from=\&date\_to=} — Créneaux libres calculés
+  \item \texttt{POST /practitioners/\{id\}/overrides} — Ajout de congés ou exceptions
+\end{itemize}
+
+\subsubsection{appointment-service (:8004)}
+\begin{itemize}
+  \item \texttt{POST /appointments} — Réservation (avec détection de conflits)
+  \item \texttt{PUT /appointments/\{id\}} — Reprogrammation
+  \item \texttt{DELETE /appointments/\{id\}} — Annulation
+  \item \texttt{POST /appointments/\{id\}/confirm} — Confirmation (secrétariat)
+  \item \texttt{POST /appointments/\{id\}/no-show} — Marquage absence
+\end{itemize}
+
+\subsubsection{analytics-service (:8006)}
+\begin{itemize}
+  \item \texttt{GET /stats/practitioner/\{id\}} — Statistiques par praticien (taux, no-shows)
+  \item \texttt{GET /stats/daily?date=} — Activité horaire d'une journée
+  \item \texttt{GET /stats/peak-hours?days=30} — Heures de pointe sur N jours
+  \item \texttt{GET /stats/overview} — Vue globale (admin)
+\end{itemize}
+
+\subsection{Codes de statut HTTP utilisés}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{cl}
+\toprule
+\textbf{Code} & \textbf{Signification dans le système} \\
+\midrule
+200 & Succès \\
+201 & Ressource créée (register, book, etc.) \\
+400 & Données invalides (dates incohérentes, statut incompatible) \\
+401 & Token absent ou invalide \\
+403 & Rôle insuffisant \\
+404 & Ressource introuvable \\
+409 & Conflit (email déjà utilisé, créneau déjà pris) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =============================
+%   SECTION 9 — DOCKER
+% =============================
+\section{Déploiement avec Docker}
+
+\subsection{Structure Docker Compose}
+
+L'ensemble du système est orchestré par un fichier \texttt{docker-compose.yml} définissant :
+
+\begin{itemize}
+  \item \textbf{8 conteneurs} : 6 microservices + PostgreSQL 16 + Mailhog (optionnel)
+  \item Un \textbf{réseau Docker interne} \texttt{rdv-net} pour la communication entre services
+  \item Un \textbf{volume persistant} \texttt{postgres\_data} pour les données PostgreSQL
+  \item Des \textbf{healthchecks} sur Postgres et chaque service
+  \item Un script d'initialisation \texttt{init-db.sh} qui crée automatiquement les 6 bases de données au premier démarrage
+\end{itemize}
+
+\begin{lstlisting}[language=yaml, caption={Extrait docker-compose.yml — appointment-service}]
+appointment-service:
+  build: ./services/appointment-service
+  container_name: rdv-appointment
+  restart: unless-stopped
+  env_file: .env
+  environment:
+    DATABASE_URL: postgresql+psycopg2://postgres:***@postgres:5432/appointment_db
+  ports: ["8004:8000"]
+  depends_on:
+    postgres: {condition: service_healthy}
+  networks: [rdv-net]
+\end{lstlisting}
+
+\subsection{Commandes de déploiement}
+
+\begin{lstlisting}[language=bash, caption={Démarrage complet du système}]
+# Build et démarrage de tous les services
+docker compose up -d --build
+
+# Vérification de l'état
+docker compose ps
+
+# Consultation des logs d'un service
+docker compose logs -f appointment-service
+
+# Arrêt complet avec suppression des données
+docker compose down -v
+\end{lstlisting}
+
+\subsection{Dockerfile type}
+
+Chaque service utilise le même modèle de Dockerfile :
+\begin{itemize}
+  \item Image de base \texttt{python:3.11-slim} (image légère)
+  \item Installation des dépendances depuis \texttt{requirements.txt}
+  \item Lancement via \texttt{uvicorn} sur le port 8000
+  \item Healthcheck HTTP sur \texttt{/health}
+\end{itemize}
+
+% =============================
+%   SECTION 10 — TESTS
+% =============================
+\section{Tests et Validation}
+
+\subsection{Collection Postman}
+
+Une collection Postman complète est fournie dans le dossier \texttt{postman/}. Elle contient \textbf{35+ requêtes} organisées en 7 dossiers :
+
+\begin{enumerate}
+  \item \textbf{Auth} : register (patient, practitioner, admin), login, refresh, get me
+  \item \textbf{Patient} : création de profil, consultation, liste, ajout antécédent
+  \item \textbf{Practitioner} : création, planning, overrides, disponibilités
+  \item \textbf{Appointment} : réservation, conflit (→ 409), détail, reprogrammation, confirmation, annulation, no-show
+  \item \textbf{Notification} : envoi email, liste
+  \item \textbf{Analytics} : stats praticien, activité journalière, no-shows, heures de pointe
+  \item \textbf{Health Checks} : vérification des 6 services
+\end{enumerate}
+
+Les requêtes de login incluent des \textbf{test scripts Postman} qui sauvegardent automatiquement le token JWT dans les variables d'environnement :
+
+\begin{lstlisting}[language=JavaScript, caption={Auto-save du token — Postman test script}]
+const j = pm.response.json();
+pm.environment.set("access_token", j.access_token);
+pm.environment.set("refresh_token", j.refresh_token);
+\end{lstlisting}
+
+\subsection{Scénario de test golden path}
+
+\begin{enumerate}
+  \item Inscription patient \texttt{alice@example.com} → \texttt{201 Created}
+  \item Inscription praticien \texttt{dr.house@example.com} → \texttt{201 Created}
+  \item Login praticien → token JWT sauvegardé automatiquement
+  \item Création profil praticien + planning hebdomadaire (lundi–vendredi, 9h–17h)
+  \item Login patient → token JWT mis à jour
+  \item Création profil patient
+  \item Consultation des disponibilités du praticien
+  \item Réservation d'un créneau → \texttt{201 Created}
+  \item Tentative de réservation du même créneau → \textbf{\texttt{409 Conflict}} (validation du système anti-doublons)
+  \item Vérification de l'email reçu (Gmail / Mailhog)
+  \item Confirmation du RDV (rôle secretary/admin)
+  \item Consultation des statistiques analytics
+\end{enumerate}
+
+\subsection{Documentation Swagger}
+
+Chaque service expose automatiquement une interface Swagger UI via FastAPI à l'adresse \texttt{/docs}. Cette interface permet de tester chaque endpoint directement depuis le navigateur avec authentification Bearer token.
+
+% =============================
+%   SECTION 11 — CONCLUSION
+% =============================
+\section{Conclusion}
+
+\subsection{Bilan technique}
+
+Ce projet a permis de concevoir et implémenter une plateforme complète de gestion des rendez-vous médicaux reposant sur une architecture microservices moderne. Les principaux acquis sont :
+
+\begin{itemize}
+  \item La maîtrise du framework \textbf{FastAPI} pour la création d'APIs REST robustes et documentées.
+  \item L'implémentation d'une authentification \textbf{OAuth2 / JWT} avec gestion des rôles.
+  \item La gestion de la logique métier complexe (disponibilités, conflits, cycle de vie des RDV).
+  \item La conteneurisation avec \textbf{Docker Compose} et la communication inter-services.
+  \item L'intégration d'un système de notifications par email réel (Gmail SMTP).
+\end{itemize}
+
+\subsection{Livrables produits}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{L{5cm} X}
+\toprule
+\textbf{Livrable} & \textbf{Statut} \\
+\midrule
+Diagramme d'architecture + flux de données & \textcolor{greenok}{\textbf{Livré}} (ARCHITECTURE.md) \\
+Collection Postman & \textcolor{greenok}{\textbf{Livrée}} (postman/) \\
+docker-compose.yml fonctionnel & \textcolor{greenok}{\textbf{Livré}} \\
+Code source 6 microservices & \textcolor{greenok}{\textbf{Livré}} (services/) \\
+Rapport PDF & \textcolor{greenok}{\textbf{Livré}} (rapport.tex) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Améliorations possibles}
+
+Pour aller plus loin dans un contexte professionnel :
+\begin{itemize}
+  \item Ajouter un \textbf{API Gateway} (Traefik ou nginx) comme point d'entrée unique.
+  \item Intégrer un \textbf{bus de messages} (RabbitMQ / Kafka) pour un couplage encore plus faible.
+  \item Mettre en place des \textbf{migrations Alembic} pour gérer l'évolution des schémas en production.
+  \item Implémenter une \textbf{suite de tests automatisés} (pytest + TestClient).
+  \item Déployer sur un cloud avec \textbf{Kubernetes} pour la haute disponibilité.
+\end{itemize}
+
+
+\end{document}
